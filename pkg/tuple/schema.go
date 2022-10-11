@@ -4,6 +4,22 @@ import "fmt"
 
 type Schema map[string]ValueType
 
+func (s Schema) ValidateTuple(t Tuple) error {
+	if len(s) != len(t) {
+		return fmt.Errorf("expected %d columns, received %d", len(s), len(t))
+	}
+	for col, val := range t {
+		typeDefined, ok := s[col]
+		if !ok {
+			return fmt.Errorf("column %s not defined in schema", col)
+		}
+		if typeDefined != val.valueType() {
+			return fmt.Errorf("type mismatch at column %s, expected %v, received %v", col, typeDefined, val.valueType())
+		}
+	}
+	return nil
+}
+
 func NewSchema(m map[string]ValueType) (Schema, error) {
 	if len(m) <= 0 {
 		return nil, fmt.Errorf("schema must not be empty")

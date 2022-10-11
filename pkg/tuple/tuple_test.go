@@ -7,8 +7,9 @@ import (
 )
 
 func TestTuple(t *testing.T) {
-	t.Run("NewSchema", testNewSchema)
-	t.Run("NewTuple", testNewTuple)
+	t.Run("NewSchema test", testNewSchema)
+	t.Run("NewTuple test", testNewTuple)
+	t.Run("Schema.ValidateTuple test", testSchemaValidateTuple)
 }
 
 func testNewSchema(t *testing.T) {
@@ -108,4 +109,92 @@ func testNewTuple(t *testing.T) {
 	for k, v := range values3 {
 		assert.Equal(t, v, tuple[k])
 	}
+}
+
+func testSchemaValidateTuple(t *testing.T) {
+	s, err := NewSchema(
+		map[string]ValueType{
+			"id":      IntegerType,
+			"name":    StringType,
+			"goals":   IntegerType,
+			"assists": IntegerType,
+			"age":     IntegerType,
+		},
+	)
+	assert.NoError(t, err)
+	tuple, err := NewTuple(
+		s,
+		map[string]Value{
+			"assists": IntegerValue(1000),
+			"id":      IntegerValue(5),
+			"name":    StringValue("Dennis Begkamp"),
+			"goals":   IntegerValue(999),
+			"age":     IntegerValue(50),
+		},
+	)
+	assert.NoError(t, err)
+
+	t.Run("The schema that initialized the tuple should be OK", func(t *testing.T) {
+		err = s.ValidateTuple(tuple)
+		assert.NoError(t, err)
+	})
+
+	t.Run("Different field name should error", func(t *testing.T) {
+		s, err := NewSchema(
+			map[string]ValueType{
+				"ID":      IntegerType,
+				"name":    StringType,
+				"goals":   IntegerType,
+				"assists": IntegerType,
+				"age":     IntegerType,
+			},
+		)
+		assert.NoError(t, err)
+		err = s.ValidateTuple(tuple)
+		assert.Error(t, err)
+	})
+
+	t.Run("Different length should error", func(t *testing.T) {
+		s, err := NewSchema(
+			map[string]ValueType{
+				"id":    IntegerType,
+				"name":  StringType,
+				"goals": IntegerType,
+				"age":   IntegerType,
+			},
+		)
+		assert.NoError(t, err)
+		err = s.ValidateTuple(tuple)
+		assert.Error(t, err)
+	})
+
+	t.Run("Different type should error", func(t *testing.T) {
+		s, err := NewSchema(
+			map[string]ValueType{
+				"id":      IntegerType,
+				"name":    StringType,
+				"goals":   StringType,
+				"assists": IntegerType,
+				"age":     IntegerType,
+			},
+		)
+		assert.NoError(t, err)
+		err = s.ValidateTuple(tuple)
+		assert.Error(t, err)
+	})
+
+	t.Run("Different order should be OK", func(t *testing.T) {
+		s, err := NewSchema(
+			map[string]ValueType{
+				"name":    StringType,
+				"goals":   IntegerType,
+				"assists": IntegerType,
+				"age":     IntegerType,
+				"id":      IntegerType,
+			},
+		)
+		assert.NoError(t, err)
+		err = s.ValidateTuple(tuple)
+		assert.NoError(t, err)
+	})
 }
