@@ -1,0 +1,5 @@
+Some decisions.
+
+Cell does not have Serialize() method. It makes more sense 
+to associate a strategy to a page (not cell) to have a uniform 
+byte representation within the same page.

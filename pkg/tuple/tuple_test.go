@@ -7,7 +7,7 @@ import (
 )
 
 func TestTuple(t *testing.T) {
-	t.Run("NewSchema test", testNewSchema)
+	t.Run("newSchema test", testNewSchema)
 	t.Run("NewTuple test", testNewTuple)
 	t.Run("Schema.ValidateTuple test", testSchemaValidateTuple)
 }
@@ -15,7 +15,7 @@ func TestTuple(t *testing.T) {
 func testNewSchema(t *testing.T) {
 	// Cannot be empty
 	types := map[string]ValueType{}
-	s, err := NewSchema(types)
+	s, err := newSchema(types)
 	assert.Error(t, err)
 	assert.Nil(t, s)
 
@@ -23,7 +23,7 @@ func testNewSchema(t *testing.T) {
 	types = map[string]ValueType{
 		"id": IntegerType,
 	}
-	s, err = NewSchema(types)
+	s, err = newSchema(types)
 	assert.NoError(t, err)
 	assert.Equal(t, IntegerType, s["id"])
 
@@ -31,7 +31,7 @@ func testNewSchema(t *testing.T) {
 	types = map[string]ValueType{
 		"id": StringType,
 	}
-	s, err = NewSchema(types)
+	s, err = newSchema(types)
 	assert.NoError(t, err)
 	assert.Equal(t, StringType, s["id"])
 
@@ -40,7 +40,7 @@ func testNewSchema(t *testing.T) {
 		"id":  StringType,
 		"Id1": IntegerType,
 	}
-	s, err = NewSchema(types)
+	s, err = newSchema(types)
 	assert.NoError(t, err)
 	assert.Equal(t, StringType, s["id"])
 	assert.Equal(t, IntegerType, s["Id1"])
@@ -49,7 +49,7 @@ func testNewSchema(t *testing.T) {
 	types = map[string]ValueType{
 		"": StringType,
 	}
-	s, err = NewSchema(types)
+	s, err = newSchema(types)
 	assert.Error(t, err)
 	assert.Nil(t, s)
 
@@ -57,7 +57,7 @@ func testNewSchema(t *testing.T) {
 	types = map[string]ValueType{
 		"-": StringType,
 	}
-	s, err = NewSchema(types)
+	s, err = newSchema(types)
 	assert.Error(t, err)
 	assert.Nil(t, s)
 }
@@ -70,7 +70,7 @@ func testNewTuple(t *testing.T) {
 		"assists": IntegerType,
 		"age":     IntegerType,
 	}
-	s, err := NewSchema(types)
+	s, err := newSchema(types)
 	assert.NoError(t, err)
 
 	values1 := map[string]Value{
@@ -112,7 +112,7 @@ func testNewTuple(t *testing.T) {
 }
 
 func testSchemaValidateTuple(t *testing.T) {
-	s, err := NewSchema(
+	s, err := newSchema(
 		map[string]ValueType{
 			"id":      IntegerType,
 			"name":    StringType,
@@ -140,7 +140,7 @@ func testSchemaValidateTuple(t *testing.T) {
 	})
 
 	t.Run("Different field name should error", func(t *testing.T) {
-		s, err := NewSchema(
+		s, err := newSchema(
 			map[string]ValueType{
 				"ID":      IntegerType,
 				"name":    StringType,
@@ -155,7 +155,7 @@ func testSchemaValidateTuple(t *testing.T) {
 	})
 
 	t.Run("Different length should error", func(t *testing.T) {
-		s, err := NewSchema(
+		s, err := newSchema(
 			map[string]ValueType{
 				"id":    IntegerType,
 				"name":  StringType,
@@ -169,7 +169,7 @@ func testSchemaValidateTuple(t *testing.T) {
 	})
 
 	t.Run("Different type should error", func(t *testing.T) {
-		s, err := NewSchema(
+		s, err := newSchema(
 			map[string]ValueType{
 				"id":      IntegerType,
 				"name":    StringType,
@@ -184,7 +184,7 @@ func testSchemaValidateTuple(t *testing.T) {
 	})
 
 	t.Run("Different order should be OK", func(t *testing.T) {
-		s, err := NewSchema(
+		s, err := newSchema(
 			map[string]ValueType{
 				"name":    StringType,
 				"goals":   IntegerType,

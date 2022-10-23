@@ -20,7 +20,7 @@ func (s Schema) ValidateTuple(t Tuple) error {
 	return nil
 }
 
-func NewSchema(m map[string]ValueType) (Schema, error) {
+func newSchema(m map[string]ValueType) (Schema, error) {
 	if len(m) <= 0 {
 		return nil, fmt.Errorf("schema must not be empty")
 	}
