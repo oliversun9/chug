@@ -69,10 +69,19 @@ func TestKeyOrderedTupleSerializer(t *testing.T) {
 			serializer := newKeyOrderedTupleSerialzer(testCase.schema)
 			b, err := serializer.Serialize(testCase.tuple)
 			require.NoError(t, err)
+			offset := 5 // just a random number
+			longer := make([]byte, offset)
+			suffix := make([]byte, offset*offset) // any length is fine
+			longer = append(longer, b...)
+			longer = append(longer, suffix...)
 			dst := tuple.Tuple{}
 			err = serializer.Deserialize(b, dst)
 			require.NoError(t, err)
 			require.Equal(t, testCase.tuple, dst)
+			dst2 := tuple.Tuple{}
+			err = serializer.Deserialize(longer[offset:], dst2)
+			require.NoError(t, err)
+			require.Equal(t, testCase.tuple, dst2)
 		})
 	}
 }
