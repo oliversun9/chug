@@ -41,9 +41,10 @@ func TestValue(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 			b := testCase.value.Serialize()
-			v, err := DeserializeValue(b, testCase.value.ValueType())
+			v, n, err := DeserializeValue(b, testCase.value.ValueType())
 			require.NoError(t, err)
 			require.Equal(t, testCase.value, v)
+			require.Equal(t, len(b), n)
 		})
 	}
 }

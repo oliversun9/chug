@@ -44,25 +44,26 @@ func (s StringValue) Serialize() []byte {
 	return b
 }
 
-func DeserializeValue(b []byte, valueType ValueType) (Value, error) {
+// returns the value deserialized from the byte slice, number of bytes read, and error
+func DeserializeValue(b []byte, valueType ValueType) (Value, int, error) {
 	switch valueType {
 	case IntegerType:
 		minLen := 8
 		if len(b) < minLen {
-			return nil, fmt.Errorf("byte slice provided is not long enough for string type, min %d, received %d", minLen, len(b))
+			return nil, 0, fmt.Errorf("byte slice provided is not long enough for string type, min %d, received %d", minLen, len(b))
 		}
-		return IntegerValue(binary.BigEndian.Uint64(b)), nil
+		return IntegerValue(binary.BigEndian.Uint64(b)), minLen, nil
 	case StringType:
 		minLen := 4
 		if len(b) < minLen {
-			return nil, fmt.Errorf("byte slice provided is not long enough for string type, min %d, received %d", minLen, len(b))
+			return nil, 0, fmt.Errorf("byte slice provided is not long enough for string type, min %d, received %d", minLen, len(b))
 		}
 		stringLen := int(binary.BigEndian.Uint32(b))
 		if len(b) < minLen+stringLen {
-			return nil, fmt.Errorf("byte slice provided is not long enough for the size specified, min %d, received %d", minLen+stringLen, len(b))
+			return nil, 0, fmt.Errorf("byte slice provided is not long enough for the size specified, min %d, received %d", minLen+stringLen, len(b))
 		}
-		return StringValue(string(b[minLen : minLen+stringLen])), nil
+		return StringValue(string(b[minLen : minLen+stringLen])), stringLen + minLen, nil
 	default:
-		return nil, fmt.Errorf("not a valid value type: %v", valueType)
+		return nil, 0, fmt.Errorf("not a valid value type: %v", valueType)
 	}
 }
