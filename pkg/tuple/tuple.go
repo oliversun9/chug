@@ -17,8 +17,8 @@ func NewTuple(s Schema, values map[string]Value) (Tuple, error) {
 		if !ok {
 			return nil, fmt.Errorf("unexpectd Column name %s is not in the schema", col)
 		}
-		if expectedType != val.valueType() {
-			return nil, fmt.Errorf("types don't match, expected %v, received %v", expectedType, val.valueType())
+		if expectedType != val.ValueType() {
+			return nil, fmt.Errorf("types don't match, expected %v, received %v", expectedType, val.ValueType())
 		}
 		t[col] = val
 	}

@@ -13,8 +13,8 @@ func (s Schema) ValidateTuple(t Tuple) error {
 		if !ok {
 			return fmt.Errorf("column %s not defined in schema", col)
 		}
-		if typeDefined != val.valueType() {
-			return fmt.Errorf("type mismatch at column %s, expected %v, received %v", col, typeDefined, val.valueType())
+		if typeDefined != val.ValueType() {
+			return fmt.Errorf("type mismatch at column %s, expected %v, received %v", col, typeDefined, val.ValueType())
 		}
 	}
 	return nil
