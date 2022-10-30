@@ -2,6 +2,12 @@ package btree
 
 import "github.com/oliversun9/chug/pkg/tuple"
 
+// a page stores a certain number of key value pairs
+type Page interface {
+	AddKeyValuePair([]byte, []byte) error
+	GetValueByKey([]byte) ([]byte, error)
+}
+
 type pageID uint32
 
 type cellPage4KB struct {
