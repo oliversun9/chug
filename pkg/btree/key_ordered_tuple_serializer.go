@@ -20,11 +20,11 @@ func newKeyOrderedTupleSerialzer(schema tuple.KeyedSchema) keyOrderedTupleSerial
 		orderedKeys: make([]string, len(schema.Schema())),
 	}
 	i := 0
-	for name, _ := range schema.Schema() {
+	for name := range schema.Schema() {
 		tupleSerializer.orderedKeys[i] = name
 		i++
 	}
-	sort.Sort(sort.StringSlice(tupleSerializer.orderedKeys))
+	sort.Strings(tupleSerializer.orderedKeys)
 	return tupleSerializer
 }
 
